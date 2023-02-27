@@ -1,5 +1,5 @@
 <p style="text-align:center">
-  <img src="https://raw.githubusercontent.com/reggieroby/authN/client/public/oauth2logo.png" alt="AuthN Logo">
+  <img src="https://raw.githubusercontent.com/reggieroby/authN/main/client/public/oauth2logo.png" alt="AuthN Logo">
 </p>
 
 # AuthN
@@ -100,3 +100,23 @@ const oauthConfig = {
 | client.website | fqdn of website using OAuth2 | 'OAuth2Placeholder' |
 | client.badgeUrl | url of brand image used to customize OAuth2 pages |  |
 |registrationWhitelist | only allow a defined list of usernames to register | any |
+
+
+
+
+
+# Development
+
+## Start the example
+
+1) cd to /example
+2) run: 
+    ```bash
+    npm i
+    ```
+3) make sure your postgres database is up and running.
+4) fill in correct [environment variables](example/config.js)
+5) run:
+    ```bash
+    npm run dev
+    ```

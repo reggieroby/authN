@@ -4,11 +4,8 @@
   "description": "faux IAM",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm run build:client && npm run build:server && npm run build:dist && npm run build:fn",
-    "build:client": "cd client; npm run build; cd ../",
-    "build:server": "cd server; npm run build; cd ../",
-    "build:fn": "babel functions -d fn --presets=@babel/env",
-    "build:dist": "rm -rf dist && mkdir -p dist/public; cp -R client/build/. dist/public/; cp -R server/build/. dist/",
+    "cli": "node_modules/.bin/babel-node -r dotenv/config cli.js",
+    "build": "npm run cli build && npm run cli deploy",
     "prettier": "prettier --write \"**/*.js\"",
     "prepublishit": "ca-cli util_bump_n_tag patch && npm run build",
     "publishit": "npm publish --access public"
@@ -29,24 +26,29 @@
   "homepage": "https://github.com/reggieroby/authN#readme",
   "dependencies": {
     "@codealpha/serve-spa": "^0.1.2",
-    "aws-sdk": "^2.771.0",
+    "aws-sdk": "^2.1323.0",
     "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1",
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
     "identicon.js": "^2.3.3",
     "jsonwebtoken": "^8.5.1",
-    "migrate": "^1.7.0",
-    "nanoid": "^3.1.12",
+    "migrate": "^1.8.0",
+    "nanoid": "^3.3.4",
     "passport": "^0.4.1",
     "passport-http-bearer": "^1.0.1",
-    "pg": "^8.4.0",
-    "uuid": "^8.3.0"
+    "pg": "^8.9.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.11.6",
-    "@babel/core": "^7.11.6",
-    "@babel/preset-env": "^7.11.5",
+    "@babel/cli": "^7.21.0",
+    "@babel/core": "^7.21.0",
+    "@babel/node": "^7.20.7",
+    "@babel/preset-env": "^7.20.2",
     "@codealpha/util": "^0.1.4",
-    "prettier": "^2.1.2"
+    "chokidar": "^3.5.3",
+    "commander": "^10.0.0",
+    "http-proxy-middleware": "^2.0.6",
+    "prettier": "^2.8.4",
+    "tree-kill": "^1.2.2"
   }
 }

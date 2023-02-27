@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    const uiRelativeRoute = "/ui"
+    // Set base url based on subroute path served from.
+    let UIBaseURL = "%PUBLIC_URL%" // default url specified in package.json, used during development.
+    if (UIBaseURL === ".") {
+      UIBaseURL = "__REPLACE_SERVER_BASE_URL__" // url replaced at runtime, used in production.
+    }
+
+    // Root path for Authentication Server routes.
+    window.AuthenticationServerPath = UIBaseURL.split(uiRelativeRoute)[0]
+
+    const baseTag = document.createElement("base");
+    const att = document.createAttribute("href");
+    att.value = `${window.location.origin}${AuthenticationServerPath}${uiRelativeRoute}/`;
+    baseTag.setAttributeNode(att);
+    document.head.appendChild(baseTag)
+  </script>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%PUBLIC_URL%/authLogo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="OAuth2 User Management" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/authLogo.png" />
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <title>Auth</title>
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <div style="display:flex;flex-direction: column;">
+        <div>
+            Welcome to the main application
+        </div>
+        <a id='loginLink' href='#'>
+            Login
+        </a>
+        <a id='permissionLink' href='#'>
+            Permissions
+        </a>
+    </div>
+    <script>
+        const websiteAddress = window.location.origin
+        document.getElementById('loginLink').href = window.location.origin+'/login.html'
+
+        const permissionUrl = `${websiteAddress}/auth/ui/rbac`
+        document.getElementById('permissionLink').href = permissionUrl
+    </script>
+</html>
