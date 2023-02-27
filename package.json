@@ -1,0 +1,52 @@
+{
+  "name": "@codealpha/auth",
+  "version": "0.1.18",
+  "description": "faux IAM",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npm run build:client && npm run build:server && npm run build:dist && npm run build:fn",
+    "build:client": "cd client; npm run build; cd ../",
+    "build:server": "cd server; npm run build; cd ../",
+    "build:fn": "babel functions -d fn --presets=@babel/env",
+    "build:dist": "rm -rf dist && mkdir -p dist/public; cp -R client/build/. dist/public/; cp -R server/build/. dist/",
+    "prettier": "prettier --write \"**/*.js\"",
+    "prepublishit": "ca-cli util_bump_n_tag patch && npm run build",
+    "publishit": "npm publish --access public"
+  },
+  "keywords": [
+    "authentication",
+    "login"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reggieroby/authN.git"
+  },
+  "author": "Reggie Roby",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/reggieroby/authN/issues"
+  },
+  "homepage": "https://github.com/reggieroby/authN#readme",
+  "dependencies": {
+    "@codealpha/serve-spa": "^0.1.2",
+    "aws-sdk": "^2.771.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "identicon.js": "^2.3.3",
+    "jsonwebtoken": "^8.5.1",
+    "migrate": "^1.7.0",
+    "nanoid": "^3.1.12",
+    "passport": "^0.4.1",
+    "passport-http-bearer": "^1.0.1",
+    "pg": "^8.4.0",
+    "uuid": "^8.3.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "@codealpha/util": "^0.1.4",
+    "prettier": "^2.1.2"
+  }
+}
