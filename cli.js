@@ -112,28 +112,30 @@ const program = new Command();
               ignored: []
             },
           }
-          component.forEach((compName) => {
-            let comp = watchConfig[compName]
-            chokidar.watch(comp.workingDirectory, { ignored: ["**/node_modules", /(^|[\/\\])\../, ...comp.ignored] })
-              .on('ready', () => console.log(`Watching:\n\t${comp.workingDirectory}`))
-              .on('change', async (filePath) => {
-                Object.entries(comp.active)
-                  .forEach(([k, v]) => v.abort())
-                let runHash = crypto.randomUUID()
-                let ac = new AbortController()
-                console.log(`Start build ${compName}: ${runHash}.`)
-                let runner = shellExec(comp.buildCMD, { signal: ac.signal })
-                comp.active[runHash] = ac
-                await runner
-                  .then(() => {
-                    delete comp.active[runHash]
-                    console.log(`Start deploy ${compName}: ${runHash}.`)
-                    return shellExec(`npm run cli deploy`)
-                  })
-                  .then(() => console.log(`Watch complete ${compName}: ${runHash}.`))
-                  .catch(() => console.log(`${comp.workingDirectory} (${runHash}) has been canceled.\n\n`))
-              })
-          })
+          component
+            .filter(name => environment === 'production' || name !== 'client')
+            .forEach((compName) => {
+              let comp = watchConfig[compName]
+              chokidar.watch(comp.workingDirectory, { ignored: ["**/node_modules", /(^|[\/\\])\../, ...comp.ignored] })
+                .on('ready', () => console.log(`Watching:\n\t${comp.workingDirectory}`))
+                .on('change', async (filePath) => {
+                  Object.entries(comp.active)
+                    .forEach(([k, v]) => v.abort())
+                  let runHash = crypto.randomUUID()
+                  let ac = new AbortController()
+                  console.log(`Building ${compName}: ${runHash}.`)
+                  let runner = shellExec(comp.buildCMD, { signal: ac.signal })
+                  comp.active[runHash] = ac
+                  await runner
+                    .then(() => {
+                      delete comp.active[runHash]
+                      console.log(`Deploying ${compName}: ${runHash}.`)
+                      return shellExec(`npm run cli deploy`)
+                    })
+                    .then(() => console.log(`Watching ${compName}.`))
+                    .catch(() => console.log(`${comp.workingDirectory} (${runHash}) has been canceled.\n\n`))
+                })
+            })
         })
         .then(() => { console.log("Built.") })
         .catch(err => console.error("Failed to build.", err))

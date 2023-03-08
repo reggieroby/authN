@@ -92,7 +92,7 @@ const oauthConfig = {
 | awsCredentialsPath      | the absolute file path to the AWS [credentials.json](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-json-file.html) file |  |
 | mfaRequired     | a SMS code is required on login in addition to a username/password.     |   false |
 | emailSalt | a bcrypt salt used to encrypt data at rest      |    no encryption |
-| database (required) |  |  |
+| database * |  |  |
 | database.type | type of database | [string] |
 | database.config | configuration object specific to a database | [Object] |
 | client |  |  |
@@ -101,22 +101,24 @@ const oauthConfig = {
 | client.badgeUrl | url of brand image used to customize OAuth2 pages |  |
 |registrationWhitelist | only allow a defined list of usernames to register | any |
 
-
-
-
-
-# Development
-
-## Start the example
-
-1) cd to /example
-2) run: 
-    ```bash
-    npm i
-    ```
-3) make sure your postgres database is up and running.
-4) fill in correct [environment variables](example/config.js)
-5) run:
-    ```bash
-    npm run dev
-    ```
+# Running Example.
+1) Start client
+    1) cd to /client
+    2) run:
+        ```bash
+        npm start
+        ```
+2) Setup initial builds and watch for changes.
+    1) from project root
+    2) run:
+        ```bash
+        npm run cli start
+        ```
+3) Start Example
+    - make sure your postgres database is up and running.
+    - fill in correct [environment variables](example/config.js)
+    1) cd to /example
+    2) run: 
+        ```bash
+        npm run dev
+        ```

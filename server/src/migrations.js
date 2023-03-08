@@ -40,7 +40,7 @@ export const runMigrations = (dbQuery, resolve) => (err, set) => {
     if (err) {
       throw err;
     }
-    console.log("oauth migrations successfully ran");
+    console.log("auth migrations successfully ran");
     resolve();
   });
 };
