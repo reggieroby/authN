@@ -12,18 +12,18 @@ export async function OAuth2Login({
     sessionStorage.setItem("ca_oauth2_code_verifier", code_verifier);
 
     fetchit(`${auth_uri}/par`, { redirect_uri, state, code_challenge })
-      .then(({ status, request_uri }) => {
-        if (status) {
-          window.location.href = `${auth_uri}/ui/login/${request_uri}`;
-        } else {
-          loginErr({ err: "login initiation failed" });
+      .then(({ status, loginURL }) => {
+        if (!status) {
+          throw new Error("login initiation failed")
         }
+
+        window.location.href = loginURL;
       })
       .catch((err) => {
         loginErr({ err });
       });
   } else if (getParam("state") === sessionStorage.getItem("ca_oauth2_state")) {
-    fetchit(`${auth_uri}/getAuthToken`, {
+    fetchit(`${auth_uri}/par/getAuthToken`, {
       code: getParam("code"),
       code_verifier: sessionStorage.getItem("ca_oauth2_code_verifier"),
     })
@@ -75,11 +75,11 @@ async function requestContinuity() {
 async function generateCodeChallenge() {
   const code_verifier = nanoid(128);
   const encoded_verifier = new TextEncoder().encode(code_verifier);
-  const sha256_verifier = await window.crypto.subtle.digest(
-    "SHA-256",
+  const sha512_verifier = await window.crypto.subtle.digest(
+    "SHA-512",
     encoded_verifier
   );
-  const code_challenge = Array.from(new Uint8Array(sha256_verifier))
+  const code_challenge = Array.from(new Uint8Array(sha512_verifier))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
   return { code_verifier, code_challenge };

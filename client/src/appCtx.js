@@ -16,8 +16,8 @@ const StateStores = {
     redirect_url: null,
   },
   user: {
-    email: null,
-    password: null,
+    email: "",
+    password: "",
     cell: null,
   },
   client: {

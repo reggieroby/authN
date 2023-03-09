@@ -7,13 +7,12 @@
     "prestart": "cd ../ && npm run build",
     "start": "npm run app",
     "app": "babel-node -r dotenv/config index.js",
-    "dev": "nodemon --watch ../dist --watch ./ --exec \"npm run app\"",
+    "dev": "nodemon --watch ../dist --watch ./ --exec \"npm run app\" & open http://localhost:5000",
     "postinstall": "cd ../client && npm i && cd ../server && npm i"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
     "express": "^4.17.1"
   },
   "devDependencies": {

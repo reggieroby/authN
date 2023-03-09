@@ -15,8 +15,10 @@
  **/
 
 var AWS = require("aws-sdk");
-export const sendSMS = (credentialsPath) => async (cell, message) => {
-  AWS.config.loadFromPath(credentialsPath);
+import applicationConfig from '../config'
+
+export async function sendSMS(cell, message) {
+  AWS.config.loadFromPath(applicationConfig.get().awsCredentialsPath);
 
   function servicePromise(service) {
     return async function (fn, param = {}) {

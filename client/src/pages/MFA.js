@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TextField } from "@mui/material";
 import { status } from "../util";
 import { useAppState } from "../appCtx";
-import { AlertMessage } from "../AlertMessage";
+import { AlertMessage } from "../comp/AlertMessage";
 
 export function MFA() {
   const [

@@ -117,8 +117,8 @@ const oauthConfig = {
 3) Start Example
     - make sure your postgres database is up and running.
     - fill in correct [environment variables](example/config.js)
-    1) cd to /example
+    1) from project root
     2) run: 
         ```bash
-        npm run dev
+        npm run cli example
         ```

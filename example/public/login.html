@@ -1,35 +1,38 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <script type="module">
-            import {OAuth2Login} from './fn/OAuth2Login.js'
 
-            OAuth2Login({
-                auth_uri: window.location.origin+'/auth',
-                redirect_uri: window.location.origin+'/login.html',
-                preLogin(){
-                    localStorage.setItem('next',`${window.location.origin}/postloginredirect.html`)
-                    localStorage.setItem('starttime',JSON.stringify(Date.now()))
-                },
-                postLogin(token){
-                    const nextUrl = localStorage.getItem('next')
-                    const startTime = localStorage.getItem('starttime')
+<head>
+    <script type="module">
+        import { OAuth2Login } from './fn/OAuth2Login.js'
 
-                    console.log('your token: ',token)
-                    localStorage.setItem('token',token)
+        OAuth2Login({
+            auth_uri: window.location.origin + '/auth',
+            redirect_uri: window.location.origin + '/login.html',
+            preLogin() {
+                localStorage.setItem('next', `${window.location.origin}/postloginredirect.html`)
+                localStorage.setItem('starttime', JSON.stringify(Date.now()))
+            },
+            postLogin(token) {
+                const nextUrl = localStorage.getItem('next')
+                const startTime = localStorage.getItem('starttime')
 
-                    alert(`it took you ${(Date.now()-startTime)/1000} seconds to login`)
-                    window.location.href = nextUrl
-                },
-                loginErr: console.error
-            })
-        </script>
-    </head>
-    <body>
-        <div style="display: flex;justify-content: center;">
-            <div>
-                Login Page
-            </div>
+                console.log('your token: ', token)
+                localStorage.setItem('token', token)
+
+                alert(`it took you ${(Date.now() - startTime) / 1000} seconds to login`)
+                window.location.href = nextUrl
+            },
+            loginErr: console.error
+        })
+    </script>
+</head>
+
+<body>
+    <div style="display: flex;justify-content: center;">
+        <div>
+            Redirecting to login...
         </div>
-    </body>
+    </div>
+</body>
+
 </html>

@@ -1,11 +1,19 @@
 import express from "express";
 import passport from "passport";
 import BearerStrategy from "passport-http-bearer";
+import { poolQuery } from "./datastore/accessor";
 
-export function firewall({ getUserWithAuthToken }) {
+async function getUserWithAuthToken(token) {
+  const {
+    rows: [user],
+  } = await poolQuery(`SELECT * FROM oauthuser WHERE token = '${token}'`);
+  return user;
+}
+
+export function authZ() {
   passport.use(
-    new BearerStrategy(function (token, done) {
-      return getUserWithAuthToken(token)
+    new BearerStrategy(async (token, done) => {
+      return getUserWithAuthToken(query, token)
         .then((user) => {
           return user ? done(null, user) : done(null, false);
         })

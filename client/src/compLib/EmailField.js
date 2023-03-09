@@ -6,7 +6,7 @@ export function EmailField(props) {
     ...passThrough
   } = useDefaultData(props)
 
-  return (<div class="EmailFieldRoot">
+  return (<div className="EmailFieldRoot">
     <TextField
       label={defaultData.label}
       {...passThrough}

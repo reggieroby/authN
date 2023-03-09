@@ -8,10 +8,11 @@ import path from "path";
 import { Command, Option } from 'commander';
 
 const ROOT_DIR = path.resolve(__dirname)
-const CA_UTIL_PATH = path.resolve(path.join(ROOT_DIR, "node_modules/.bin/ca-fnc"))
 const CLIENT_DIR = path.resolve(path.join(ROOT_DIR, "client"))
 const SERVER_DIR = path.resolve(path.join(ROOT_DIR, "server"))
 const FUNCTIONS_DIR = path.resolve(path.join(ROOT_DIR, "functions"))
+const EXAMPLE_DIR = path.resolve(path.join(ROOT_DIR, "example"))
+const DIST_DIR = path.resolve(path.join(ROOT_DIR, "dist"))
 
 const program = new Command();
 
@@ -156,9 +157,64 @@ const program = new Command();
       return shellExec(`npm run cli build -- --environment ${environment}`, { cwd: ROOT_DIR, verbose: true, stdio: 'inherit' })
         .then(() => shellExec(`npm run cli deploy`, { cwd: ROOT_DIR, verbose: true, stdio: 'inherit' }))
         .then(() => shellExec(`npm run cli autoWatch -- --environment ${environment}`, { cwd: ROOT_DIR, verbose: true, stdio: 'inherit' }))
-        .then(() => { console.log("Environment ready to run Example.") })
         .catch(err => console.error("Failed to setup environment.", err))
     });
+
+
+  program.command('example')
+    .description('Start example project')
+    .addOption(
+      new Option(
+        '--component <string...>',
+        'Specify which component to start.'
+      )
+        .default(['example'])
+        .makeOptionMandatory()
+        .choices(['example'])
+    )
+    .action(async ({ component }) => {
+      let watchConfig = {
+        example: {
+          buildCMD: `npm run app`,
+          active: {},
+          workingDirectory: EXAMPLE_DIR,
+          ignored: []
+        },
+      }
+      component
+        .forEach((compName) => {
+          let comp = watchConfig[compName]
+          chokidar.watch([comp.workingDirectory, DIST_DIR], { ignored: ["**/node_modules", /(^|[\/\\])\../] })
+            .on('ready', () => console.log(`Watching:\n\t${comp.workingDirectory}\n\t${DIST_DIR}`))
+            .on('ready', async () => {
+              Object.entries(comp.active)
+                .forEach(([k, v]) => v.abort())
+              comp.active = {}
+              let runHash = crypto.randomUUID()
+              let ac = new AbortController()
+              console.log(`Running ${compName}: ${runHash}.`)
+              let runner = shellSpawn('npm', ['run', 'app'], { cwd: comp.workingDirectory, signal: ac.signal, stdio: 'inherit', verbose: true, })
+              comp.active[runHash] = ac
+              await runner
+                .catch(() => console.log(`${comp.workingDirectory} (${runHash}) has been canceled.\n\n`))
+            })
+            .on('change', async (filePath) => {
+              Object.entries(comp.active)
+                .forEach(([k, v]) => v.abort())
+              comp.active = {}
+              let runHash = crypto.randomUUID()
+              let ac = new AbortController()
+              console.log(`Running ${compName}: ${runHash}.`)
+              let runner = shellSpawn('npm', ['run', 'app'], { cwd: comp.workingDirectory, signal: ac.signal, stdio: 'inherit', verbose: true, })
+              comp.active[runHash] = ac
+              await runner
+                .catch(() => console.log(`${comp.workingDirectory} (${runHash}) has been canceled.\n\n`))
+            })
+        })
+    });
+
+
+
   program.parse();
 })()
 
@@ -170,7 +226,7 @@ const program = new Command();
 // FILE SYSTEM FUNCTIONS
 
 async function shellSpawn(cmd, args = [], allOptions = {}) {
-  let { verbose, ...options } = { verbose: false, ...allOptions }
+  let { verbose, signal, ...options } = { verbose: false, ...allOptions }
 
   return new Promise((resolve, reject) => {
     let fn = spawn(cmd, args, options, (err, stdout, stderr) => {
@@ -179,13 +235,16 @@ async function shellSpawn(cmd, args = [], allOptions = {}) {
         console.error(stderr)
       }
       if (err) {
-        console.log('about to reject')
         return reject(err)
       } else {
-        console.log('about to resolve')
         return resolve(stdout)
       }
     });
+    if (signal) {
+      signal.onabort = () => {
+        kill(fn.pid)
+      }
+    }
   });
 }
 

@@ -1,9 +1,37 @@
 import { Pool } from "pg";
 var migrate = require("migrate");
 import { runMigrations } from "./migrations";
+import applicationConfig from '../config'
 
-export async function initializeDB({ dbQuery }) {
+let POSTGRES_POOL;
+let LOGGER;
+
+const startPool = ({ config = {}, logger = console.error } = {}) => {
+  let poolConfig = { ...applicationConfig.get().database.config, ...config }
+  LOGGER = logger
+  if (!POSTGRES_POOL) {
+    POSTGRES_POOL = new Pool(poolConfig);
+  }
+}
+
+export const poolQuery = async (...params) => {
+  let client;
+  try {
+    client = await POSTGRES_POOL.connect();
+    const res = await client.query(...params);
+    client.release();
+    return res;
+  } catch (err) {
+    client && client.release();
+    LOGGER({ message: err.message, ...err, params });
+    console.trace();
+    throw "Auth Database Error";
+  }
+}
+
+export async function initializeDB() {
   return new Promise((resolve, reject) => {
+    startPool()
     migrate.load(
       {
         migrationsDirectory: __dirname,
@@ -13,7 +41,7 @@ export async function initializeDB({ dbQuery }) {
           load: async function (fn) {
             try {
               // Load the single row of migration data from the database
-              const { rows } = await dbQuery("SELECT data FROM migrations");
+              const { rows } = await poolQuery("SELECT data FROM migrations");
               fn(null, rows[0].data);
             } catch (err) {
               console.log(
@@ -25,11 +53,11 @@ export async function initializeDB({ dbQuery }) {
 
           save: async function (set, fn) {
             // Check if table 'migrations' exists and if not, create it.
-            await dbQuery(
+            await poolQuery(
               "CREATE TABLE IF NOT EXISTS migrations (id integer PRIMARY KEY, data jsonb NOT NULL)"
             );
 
-            await dbQuery(
+            await poolQuery(
               `
                 INSERT INTO migrations (id, data)
                 VALUES (1, $1)
@@ -47,19 +75,12 @@ export async function initializeDB({ dbQuery }) {
           },
         },
       },
-      runMigrations(dbQuery, resolve)
+      runMigrations(poolQuery, resolve)
     );
   });
 }
 
-export async function DB(config) {
-  const pool = new Pool(config);
-  return async (...params) => {
-    try {
-      return await pool.query(...params);
-    } catch (err) {
-      console.error(err);
-    }
-    throw new Error("");
-  };
-}
+export const databaseMiddleware = (req, res, next) => {
+  req.authDatabase = { poolQuery }
+  next();
+};

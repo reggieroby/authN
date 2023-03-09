@@ -1,19 +1,12 @@
 import express from "express";
 import path from "path";
 import { oauth } from "../dist";
-import { randomUUID, createHash, } from 'crypto'
-import { genSaltSync } from "bcryptjs";
 import { appPort, postgresConfig, clientConfig } from "./config"
 
 const app = express();
 
 const oauthConfig = {
   awsCredentialsPath: path.join(__dirname, "credentials.json"),
-  mfaRequired: false,
-  emailSalt: genSaltSync(),
-  tokenSigningKey: createHash("sha256")
-    .update(randomUUID())
-    .digest("hex"),
   database: {
     type: "postgres",
     config: postgresConfig,

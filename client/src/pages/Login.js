@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { Link, redirect, useParams } from "react-router-dom";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
+import { Link, useParams } from "react-router-dom";
+import { EmailField } from "../compLib/EmailField"
+import { PasswordField } from "../compLib/PasswordField"
+import { Button } from "../compLib/Button"
 import { status } from "../util";
 import { useAppState } from "../appCtx";
-import { AlertMessage } from "../AlertMessage";
+import { AlertMessage } from "../comp/AlertMessage";
 
 export function Login() {
   let { request_uri } = useParams();
@@ -12,31 +13,33 @@ export function Login() {
     {
       basePath,
       user: { email, password },
-      client: { badgeUrl, mfaRequired },
-      oauth2: { redirect_url },
+      client: { badgeUrl },
+      oauth2: { redirect_url, isRegistered },
     },
     dispatch,
   ] = useAppState();
-  const [openAlert, setOpenAlert] = useState(false);
+  const alertAccessor = useState(false);
+  const setOpenAlert = useCallback(alertAccessor[1], [alertAccessor])
 
-  function processResponse({ status, code, state, redirect_uri }) {
-    if (!status) {
-      setOpenAlert(true);
-      return;
-    } else {
-      dispatch({ type: "updateOAuth2", oauth2: { code, redirect_uri, state } });
-    }
-  }
+  const isLoginAllowed = useMemo(
+    () => email && password,
+    [email, password]
+  )
+
   function fetchAuthCode() {
-    fetch(`${basePath}/getAuthCode/${request_uri}`, {
+    fetch(`${basePath}/par/getAuthCode`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, request_uri }),
     })
       .then(status)
-      .then(processResponse)
+      .then(function processResponse({ status, code, state, redirect_uri }) {
+        return status ?
+          dispatch({ type: "updateOAuth2", oauth2: { code, redirect_uri, state } }) :
+          setOpenAlert(true)
+      })
       .catch(console.error);
   }
   const onEnter = (e) => {
@@ -45,16 +48,25 @@ export function Login() {
     fetchAuthCode();
   };
   const onLoginBtn = (e) => {
+    setOpenAlert(false);
     if (!(email && password)) return;
     fetchAuthCode();
   };
 
+  const updateUser = useCallback((user) => {
+    dispatch({ type: "updateUser", user });
+  }, [dispatch])
+
+  useEffect(() => {
+    isRegistered && fetchAuthCode()
+  }, [])
+
   if (redirect_url) {
-    if (mfaRequired) {
-      return redirect("/mfa");
-    } else {
-      window.location.href = redirect_url;
-    }
+    window.location.href = redirect_url;
+  }
+
+  if (isRegistered) {
+    return <div>Logging in...</div>
   }
   return (
     <div>
@@ -72,58 +84,39 @@ export function Login() {
         <h2 style={{ marginTop: "10px" }}>Login</h2>
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <TextField
-          autoFocus={true}
+        <EmailField
+          fullWidth
           required
-          label="Email"
-          type="text"
-          variant="outlined"
-          margin="dense"
+          autoFocus
           onKeyUp={onEnter}
           value={email}
-          onChange={(e) =>
-            dispatch({
-              type: "updateUser",
-              user: { email: e.target.value.toLowerCase() },
-            })
-          }
+          onChange={(email) => updateUser({ email: email.toLowerCase() })}
         />
-        <TextField
+        <PasswordField
+          fullWidth
           required
-          label="Password"
-          type="password"
-          variant="outlined"
-          margin="dense"
           onKeyUp={onEnter}
           value={password}
-          onChange={(e) =>
-            dispatch({
-              type: "updateUser",
-              user: { password: e.target.value }
-            })
-          }
+          onChange={(password) => updateUser({ password })}
         />
         <Button
-          variant="contained"
-          color="primary"
+          style={{ marginTop: ".5rem" }}
+          text="Login"
           onClick={onLoginBtn}
-          style={{ marginTop: "5px" }}
-        >
-          Login
-        </Button>
-        <hr />
+          disabled={!isLoginAllowed}
+        />
+        <hr style={{ margin: "1.5rem .5rem", border: '1px solid slategrey', }} />
         <Link
           to={`/register/${request_uri}`}
-          style={{ color: "blue", textDecoration: "none", alignSelf: "center" }}
+          style={{ color: "blue", textDecoration: "none", alignSelf: "center", width: "90%" }}
           underline="none"
         >
-          <Button variant="outlined">Create Account</Button>
+          <Button text="Create Account" variant="outlined" fullWidth />
         </Link>
       </div>
       <AlertMessage
-        message="Login Failed"
-        open={openAlert}
-        setter={setOpenAlert}
+        text="Login Failed"
+        accessor={alertAccessor}
       />
     </div>
   );
