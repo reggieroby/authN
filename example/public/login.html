@@ -8,19 +8,16 @@
         OAuth2Login({
             auth_uri: window.location.origin + '/auth',
             redirect_uri: window.location.origin + '/login.html',
-            preLogin() {
+            async preLogin() {
                 localStorage.setItem('next', `${window.location.origin}/postloginredirect.html`)
                 localStorage.setItem('starttime', JSON.stringify(Date.now()))
             },
-            postLogin(token) {
-                const nextUrl = localStorage.getItem('next')
-                const startTime = localStorage.getItem('starttime')
-
+            async postLogin(token) {
                 console.log('your token: ', token)
                 localStorage.setItem('token', token)
 
-                alert(`it took you ${(Date.now() - startTime) / 1000} seconds to login`)
-                window.location.href = nextUrl
+                alert(`it took you ${(Date.now() - localStorage.getItem('starttime')) / 1000} seconds to login`)
+                window.location.href = localStorage.getItem('next')
             },
             loginErr: console.error
         })

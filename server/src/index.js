@@ -7,8 +7,5 @@ export const oauth = async (config) => {
   await applicationConfig.set(config)
   await initializeDB();
 
-  return {
-    authN: authN(),
-    authZ: authZ(),
-  };
+  return { authN, authZ, };
 };

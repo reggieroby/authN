@@ -7,9 +7,9 @@ let POSTGRES_POOL;
 let LOGGER;
 
 const startPool = ({ config = {}, logger = console.error } = {}) => {
-  let poolConfig = { ...applicationConfig.get().database.config, ...config }
-  LOGGER = logger
   if (!POSTGRES_POOL) {
+    let poolConfig = { ...applicationConfig.get().database.config, ...config }
+    LOGGER = logger
     POSTGRES_POOL = new Pool(poolConfig);
   }
 }

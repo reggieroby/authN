@@ -7,9 +7,11 @@
 Faux IAM.
 
 reference material:
-  - [OAuth2 RFC](https://tools.ietf.org/html/rfc6749) specification.
-  - [Authorization Code](https://oauth.net/2/grant-types/authorization-code/) Grant Type
-  - [Bearer Token](https://oauth.net/2/bearer-tokens/) as an API firewall.
+  - [OAuth2](https://tools.ietf.org/html/rfc6749) Authorization framework.
+  - [PAR](https://www.rfc-editor.org/rfc/rfc9126) Auth flow: Pushed Authorization Request
+  - [PKCE](https://www.rfc-editor.org/rfc/rfc7636) Additional security: Proof-Key for Code Exchange.
+  - [Authorization Code](https://oauth.net/2/grant-types/authorization-code/) Auth Grant Type.
+  - [Bearer Token](https://oauth.net/2/bearer-tokens/) Authentication usage mechanism.
 
 # Installation
 ```bash
@@ -52,7 +54,7 @@ _"/ui"_:
 _"/client"_:
   - data about the website using OAuth2
 
-_"/whoami"_:
+_"/user/whoami"_:
   - user object
 
 ### authZ

@@ -25,7 +25,12 @@ export async function createNewUser(email, password, cell) {
     .then(({ rows: [user] }) => user);
 }
 
-export async function getUserWithEmailPassword(email, password) {
+export async function getUserByEmailPassword(email, password) {
   return getUserByEmail(email.toLowerCase())
     .then((user) => user && compareSync(password, user.password_hash_wsalt) ? user : null)
+}
+
+export async function getUserByAuthToken(token) {
+  return poolQuery(`SELECT * FROM oauthuser WHERE token = '${token}'`)
+    .then(({ rows: [user] }) => user);
 }

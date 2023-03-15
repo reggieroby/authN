@@ -1,22 +1,22 @@
 export async function OAuth2Login({
   auth_uri,
   redirect_uri,
-  preLogin = () => { },
-  postLogin = console.log,
+  preLogin = async () => { },
+  postLogin = async (..._) => console.log(..._),
   loginErr = console.err,
 }) {
   if (!getParam("code")) {
-    preLogin();
     const { state, code_verifier, code_challenge } = await requestContinuity();
     sessionStorage.setItem("ca_oauth2_state", state);
     sessionStorage.setItem("ca_oauth2_code_verifier", code_verifier);
 
-    fetchit(`${auth_uri}/par`, { redirect_uri, state, code_challenge })
+    Promise.resolve()
+      .then(preLogin)
+      .then(() => fetchit(`${auth_uri}/par`, { redirect_uri, state, code_challenge }))
       .then(({ status, loginURL }) => {
         if (!status) {
-          throw new Error("login initiation failed")
+          throw new Error("Login initiation failed")
         }
-
         window.location.href = loginURL;
       })
       .catch((err) => {
@@ -29,16 +29,16 @@ export async function OAuth2Login({
     })
       .then(({ status, token }) => {
         if (!status) {
-          loginErr({ err: "code exchange failed" });
-        } else {
-          postLogin(token);
+          throw new Error("Code exchange failed.")
         }
+        return token;
       })
+      .then(postLogin)
       .catch((err) => {
         loginErr({ err });
       });
   } else {
-    loginErr({ err: "state mismatch. code exchange terminated" });
+    loginErr({ err: "State mismatch. Code exchange terminated." });
   }
 }
 

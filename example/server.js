@@ -22,12 +22,12 @@ export const Server = async () => {
     .use(express.static(path.join(__dirname, "public")))
     .use("/fn", express.static(path.join(__dirname, "../functions")))
     .use("/auth", authN)
-    .get("/private/stuff", [
+    .get("/accessedOnlyByAuthNBearerToken",
       authZ,
       (req, res, next) => {
         res.send({ message: "welcome VIP", data: ["a", 2, { b: true }] });
-      },
-    ])
+      }
+    )
     .listen(appPort, () => {
       console.log(`ACME lmtd server listening at http://localhost:${appPort}`);
     });
