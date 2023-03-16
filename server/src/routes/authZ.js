@@ -1,7 +1,7 @@
 import express from "express";
 import passport from "passport";
 import BearerStrategy from "passport-http-bearer";
-import { getUserByAuthToken } from "./model/user";
+import { getUserByAuthToken } from "../model/user";
 
 passport.use(
   new BearerStrategy(async (token, done) => {

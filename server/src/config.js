@@ -16,7 +16,7 @@ class ApplicationConfiguration {
     let config = {
       mfaRequired: false,
       registrationWhitelist: [],
-      client: { name: "OAuth2", website: "OAuth2" },
+      client: { name: "AuthServer", website: "AuthServer" },
       ...appConfig,
     }
 

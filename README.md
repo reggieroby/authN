@@ -49,22 +49,22 @@ const Server = async () => {
 ```
 
 _"/ui"_: 
-  - OAuth2 User Interface
+  - AS User Interface
 
 _"/client"_:
-  - data about the website using OAuth2
+  - data about the website using the AS
 
 _"/user/whoami"_:
   - user object
 
 ### authZ
 ```js
-.use("/private/stuff", [
+.use("/private/stuff",
       authZ,
       (req, res) => {
         res.send({ message: "welcome VIP", data: ["a", 2, { b: true }] });
       },
-    ])
+    )
 ```
 
 # ClientSide Callback workflow
@@ -103,19 +103,22 @@ const oauthConfig = {
 | client.badgeUrl | url of brand image used to customize OAuth2 pages |  |
 |registrationWhitelist | only allow a defined list of usernames to register | any |
 
-# Running Example.
+# Running Example (dev mode)
+## Authentication Server UI
 1) Start client
     1) cd to /client
     2) run:
         ```bash
         npm start
         ```
+## Build server & end-user functions
 2) Setup initial builds and watch for changes.
     1) from project root
     2) run:
         ```bash
         npm run cli start
         ```
+## Example end-user application
 3) Start Example
     - make sure your postgres database is up and running.
     - fill in correct [environment variables](example/config.js)
@@ -124,3 +127,10 @@ const oauthConfig = {
         ```bash
         npm run cli example
         ```
+
+# Building npm module.
+  1) from project root
+  2) run:
+      ```bash
+      npm run build
+      ```

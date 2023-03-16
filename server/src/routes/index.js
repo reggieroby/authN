@@ -1,2 +1,6 @@
 export { Routes as parRoutes } from './par'
 export { Routes as userRoutes } from './user'
+export { Routes as mfaRoutes } from './mfa'
+export { Routes as clientRoutes } from './client'
+export { authN } from './authN'
+export { authZ } from './authZ'

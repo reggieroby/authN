@@ -1,22 +1,36 @@
 <!DOCTYPE html>
 <html>
-<body>
-    <div style="display:flex;flex-direction: column;">
-        <div>
-            Welcome to the main application
-        </div>
-        <a id='loginLink' href='#'>
-            Login
-        </a>
-        <a id='permissionLink' href='#'>
-            Permissions
-        </a>
-    </div>
-    <script>
-        const websiteAddress = window.location.origin
-        document.getElementById('loginLink').href = window.location.origin+'/login.html'
 
-        const permissionUrl = `${websiteAddress}/auth/ui/rbac`
-        document.getElementById('permissionLink').href = permissionUrl
-    </script>
+<body>
+  <div style="display:flex;flex-direction: column;align-items: flex-start;">
+    <div>
+      Welcome to the main application
+    </div>
+    <a id='loginLink' href='#'>
+      Login
+    </a>
+    <a id='postLoginLink' href='#'>
+      post login page.
+    </a>
+
+    <input type="button" onclick="resetData()" value="clear data" />
+
+    <a id='permissionLink' href='#' style="display: none;">
+      Permissions
+    </a>
+  </div>
+  <script>
+    const websiteAddress = window.location.origin
+    document.getElementById('loginLink').href = window.location.origin + '/login.html'
+    document.getElementById('postLoginLink').href = window.location.origin + '/postloginredirect.html'
+
+
+    const permissionUrl = `${websiteAddress}/auth/ui/rbac`
+    document.getElementById('permissionLink').href = permissionUrl
+
+    function resetData() {
+      localStorage.clear()
+    }
+  </script>
+
 </html>

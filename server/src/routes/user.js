@@ -1,7 +1,6 @@
 import express from "express";
 import Identicon from "identicon.js";
-import jwt from "jsonwebtoken";
-import { authZ } from "../authZ";
+import { authZ } from "./authZ";
 import { getUserByEmail, createNewUser } from "../model/user";
 import { isEmailWhitelisted } from "../service/util";
 import { jsonBodyParser } from "./util";
@@ -52,3 +51,21 @@ export const Routes = express
   //     res.send(!err);
   //   });
   // })
+
+
+
+  // .post("/refreshAuthToken", async (req, res) => {
+  //   const { refreshToken: rToken } = req.body;
+  //   let payload = {
+  //     status: false,
+  //   };
+  //   const user = await getUserWithAuthRefreshToken(rToken);
+  //   if (user) {
+  //     const {
+  //       token,
+  //       refresh_token: refreshToken,
+  //     } = await setUserAuthRefreshToken(rToken);
+  //     if (token) payload = { status: true, token, refreshToken };
+  //   }
+  //   res.send(payload);
+  // });
