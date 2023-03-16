@@ -1,5 +1,5 @@
 <p style="text-align:center">
-  <img src="https://raw.githubusercontent.com/reggieroby/authN/main/client/public/oauth2logo.png" alt="AuthN Logo">
+  <img src="https://raw.githubusercontent.com/reggieroby/authN/main/client/public/authLogo.png" alt="AuthN Logo">
 </p>
 
 # AuthN
@@ -128,9 +128,21 @@ const oauthConfig = {
         npm run cli example
         ```
 
-# Building npm module.
-  1) from project root
-  2) run:
-      ```bash
-      npm run build
-      ```
+# Publishing npm module.
+1) Create NPM [granular access token](https://www.npmjs.com/settings/catech/tokens/granular-access-tokens/new).
+StackOverflow [ref](https://stackoverflow.com/questions/65851190/how-do-i-publish-a-package-to-npm-using-an-api-key)
+    1) run:
+        ```bash
+        npm config set _authToken=GRANULAR_ACCESS_TOKEN
+        ```
+        * if you get an error like `Invalid auth configuration found: '_authToken' must be renamed to '//registry.npmjs.org/:_authToken' in user config`.
+        1) run:
+            ```bash
+            npm config fix
+            ```
+2) Publish to NPM.
+    1) from project root
+    2) run:
+        ```bash
+        npm run publishit
+        ```
