@@ -3,19 +3,22 @@ import path from 'path'
 import { getUserByEmailPassword } from "../model/user";
 import { setNewPar, consumePar, setUserAuthToken, useParWithCode, } from "../model/par";
 import { jsonBodyParser } from "./util";
+import applicationConfig from '../config'
 
 export const Routes = express
   .Router()
   .use(jsonBodyParser)
   .post("/", async (req, res) => {
     const { redirect_uri, client_id, code_challenge, state } = req.body;
+    const getFQDN = () => applicationConfig.get().FQDN || `${req.protocol}://${req.get('host')}`
+
     return setNewPar({
       redirect_uri,
       client_id,
       code_challenge,
       state,
     })
-      .then(({ request_uri }) => `${req.protocol}://${req.get('host')}${path.resolve(req.baseUrl, '../ui/login')}/${request_uri}`)
+      .then(({ request_uri }) => `${getFQDN()}${path.resolve(req.baseUrl, '../ui/login')}/${request_uri}`)
       .then(loginURL => ({ status: true, loginURL }))
       .catch(() => ({ status: false, }))
       .then((payload) => res.send(payload))

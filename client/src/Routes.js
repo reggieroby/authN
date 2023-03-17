@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes as RouterRoutes, Route, redirect } from "react-router-dom";
+import { BrowserRouter, Routes as RouterRoutes, Route } from "react-router-dom";
 import { useAppState } from "./appCtx";
 import { Login, Register, MFA, NotFound } from "./pages";
 

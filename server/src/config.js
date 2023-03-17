@@ -14,6 +14,7 @@ class ApplicationConfiguration {
 
   async set(appConfig) {
     let config = {
+      // FQDN: "https://my.fullyQualifiedDomainName.com", used to resolve correct resource URL behind a load balancer.
       mfaRequired: false,
       registrationWhitelist: [],
       client: { name: "AuthServer", website: "AuthServer" },
@@ -35,22 +36,8 @@ class ApplicationConfiguration {
 
 
 
-    // console.info(chalk.black(`tokenSigningKey was not provided. A random one will be created.`))
-    // console.info(chalk.red(`tokenSigningKey was not provided. A random one will be created.`))
-    // console.info(chalk.green(`tokenSigningKey was not provided. A random one will be created.`))
-    // console.info(chalk.yellow(`tokenSigningKey was not provided. A random one will be created.`))
-    // console.info(chalk.blue(`tokenSigningKey was not provided. A random one will be created.`))
-    // console.info(chalk.magenta(`tokenSigningKey was not provided. A random one will be created.`))
-    // console.info(chalk.cyan(`tokenSigningKey was not provided. A random one will be created.`))
-    // console.info(chalk.white(`tokenSigningKey was not provided. A random one will be created.`))
-    // console.info(chalk.gray(`tokenSigningKey was not provided. A random one will be created.`))
-    // console.info(chalk.greenBright(`tokenSigningKey was not provided. A random one will be created.`))
-    // console.info(chalk.yellowBright(`tokenSigningKey was not provided. A random one will be created.`))
-    // console.info(chalk.blueBright(`tokenSigningKey was not provided. A random one will be created.`))
-    // console.info(chalk.magentaBright(`tokenSigningKey was not provided. A random one will be created.`))
-    // console.info(chalk.cyanBright(`tokenSigningKey was not provided. A random one will be created.`))
-    // console.info(chalk.whiteBright(`tokenSigningKey was not provided. A random one will be created.`))
-
+    // chalk colors:
+    // black, red, green, yellow, blue, magenta, cyan, white, gray, greenBright, yellowBright, blueBright, magentaBright, cyanBright, whiteBright,
     this.#config = config
   }
 }

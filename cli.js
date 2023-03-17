@@ -38,7 +38,7 @@ const program = new Command();
         '--environment <string>',
         'Specify which environment variables to load.'
       )
-        .default(['production'])
+        .default('production')
         .makeOptionMandatory()
         .choices(['development', 'production'])
     )
@@ -86,7 +86,7 @@ const program = new Command();
         '--environment <string>',
         'Specify which environment to load.'
       )
-        .default(['development'])
+        .default('development')
         .makeOptionMandatory()
         .choices(['development', 'production'])
     )
@@ -149,7 +149,7 @@ const program = new Command();
         '--environment <string>',
         'Specify which environment to load.'
       )
-        .default(['development'])
+        .default('development')
         .makeOptionMandatory()
         .choices(['development', 'production'])
     )

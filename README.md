@@ -15,7 +15,7 @@ reference material:
 
 # Installation
 ```bash
-npm install --save @codealpha/oauth2
+npm i @codealpha/oauth2 --save
 ```
 
 # Example
