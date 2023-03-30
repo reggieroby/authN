@@ -141,7 +141,12 @@ StackOverflow [ref](https://stackoverflow.com/questions/65851190/how-do-i-publis
             npm config fix
             ```
 2) Publish to NPM.
-    1) from project root
+    - from project root
+    1) run:
+        ```bash
+        npm login
+        ```
+        - Login will ask to open browser. Follow instructions for MFA/OTP.
     2) run:
         ```bash
         npm run publishit
