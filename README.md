@@ -129,25 +129,33 @@ const oauthConfig = {
         ```
 
 # Publishing npm module.
-1) Create NPM [granular access token](https://www.npmjs.com/settings/catech/tokens/granular-access-tokens/new).
-StackOverflow [ref](https://stackoverflow.com/questions/65851190/how-do-i-publish-a-package-to-npm-using-an-api-key)
-    1) run:
-        ```bash
-        npm config set _authToken=GRANULAR_ACCESS_TOKEN
-        ```
-        * if you get an error like `Invalid auth configuration found: '_authToken' must be renamed to '//registry.npmjs.org/:_authToken' in user config`.
-        1) run:
-            ```bash
-            npm config fix
-            ```
+1) Login NPM.
+  * With CLI.
+      1) run:
+          ```bash
+          npm login
+          ```
+          - Login will ask to open browser. Follow instructions for MFA/OTP.
+  * With [granular access token](https://www.npmjs.com/settings/catech/tokens/granular-access-tokens/new).
+      - [StackOverflow issue](https://stackoverflow.com/questions/65851190/how-do-i-publish-a-package-to-npm-using-an-api-key)
+      1) run:
+          ```bash
+          npm config set _authToken=GRANULAR_ACCESS_TOKEN
+          ```
+          * if you get an error like `Invalid auth configuration found: '_authToken' must be renamed to '//registry.npmjs.org/:_authToken' in user config`.
+          1) run:
+              ```bash
+              npm config fix
+              ```
 2) Publish to NPM.
     - from project root
-    1) run:
-        ```bash
-        npm login
-        ```
-        - Login will ask to open browser. Follow instructions for MFA/OTP.
     2) run:
         ```bash
         npm run publishit
+        ```
+3) Logout NPM.
+    - from project root
+    2) run:
+        ```bash
+        npm logout
         ```
